@@ -1,19 +1,20 @@
 import axios from 'axios';
 
-// Buat instance axios dengan konfigurasi default
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // URL dasar backend Anda
+    // Saat di Vercel, ini akan menggunakan URL dari Railway.
+    // Saat di komputer lokal, ini akan menggunakan localhost.
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
 });
 
-// Ini adalah "interceptor" yang akan berjalan sebelum SETIAP permintaan dikirim
+// Interceptor untuk menambahkan token otorisasi secara otomatis
 api.interceptors.request.use(
     (config) => {
-        // Ambil data userInfo dari localStorage
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-
-        // Jika ada, tambahkan token ke header Authorization
-        if (userInfo && userInfo.token) {
-            config.headers['Authorization'] = `Bearer ${userInfo.token}`;
+        // Cek hanya jika kode berjalan di sisi browser
+        if (typeof window !== 'undefined') {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            if (userInfo && userInfo.token) {
+                config.headers['Authorization'] = `Bearer ${userInfo.token}`;
+            }
         }
         return config;
     },
