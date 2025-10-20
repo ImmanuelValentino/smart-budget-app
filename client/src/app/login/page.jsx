@@ -58,9 +58,6 @@ const LoginPage = () => {
                     >
                         Login
                     </button>
-                    <p className="mt-4 text-xs text-yellow-500">
-                        DEBUG URL API: {process.env.NEXT_PUBLIC_API_URL || "TIDAK DITEMUKAN"}
-                    </p>
                 </form>
                 <p className="text-sm text-center text-gray-400">
                     Belum punya akun?{' '}
