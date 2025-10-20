@@ -1,18 +1,16 @@
 import axios from 'axios';
 
-// Tentukan baseURL berdasarkan lingkungan (production atau development)
-const baseURL = process.env.NODE_ENV === 'production'
-    ? process.env.NEXT_PUBLIC_API_URL // Ini HARUS digunakan saat di Vercel
-    : 'http://localhost:5000/api';     // Ini hanya untuk development di komputer Anda
+// Menggunakan nama variabel baru dari Vercel
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL: baseURL,
 });
 
-// Log ini akan muncul di build log Vercel untuk kita periksa
-console.log(`API Service is using baseURL: ${baseURL}`);
+// Log ini untuk memastikan URL yang benar digunakan saat build
+console.log(`[API Service] Using baseURL: ${baseURL}`);
 
-// Interceptor untuk menambahkan token otorisasi secara otomatis
+// Interceptor untuk token
 api.interceptors.request.use(
     (config) => {
         if (typeof window !== 'undefined') {
