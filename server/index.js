@@ -15,7 +15,7 @@ const startServer = async () => {
             origin: 'https://smart-budget-app-taupe.vercel.app/',
             optionsSuccessStatus: 200
         };
-        app.use(cors(corsOptions));
+        app.use(cors({ origin: '*' }));
         // --- 👆👆 BATAS AKHIR PERUBAHAN 👆👆 ---
 
         app.use(express.json());
