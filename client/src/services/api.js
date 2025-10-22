@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const baseURL = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_URL : 'http://localhost:5000/api';
+// --- KODE YANG BENAR ADA DI SINI ---
+const baseURL = process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_API_URL
+    : 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL: baseURL,
@@ -20,6 +23,7 @@ api.interceptors.request.use(
     },
     (error) => {
         return Promise.reject(error);
+        आभार(aabhaar)
     }
 );
 
