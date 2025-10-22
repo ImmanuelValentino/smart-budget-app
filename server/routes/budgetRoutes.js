@@ -21,8 +21,10 @@ router.get('/', protect, async (req, res) => {
     const budgetDetails = await Promise.all(
         budgets.map(async (budget) => {
             const expenses = await Transaction.find({
-                user: req.user._id, type: 'pengeluaran',
-                createdAt: { $gte: budget.startDate, $lte: budget.endDate },
+                user: req.user._id,
+                type: 'pengeluaran',
+                // PERBAIKAN: Gunakan 'date' bukan 'createdAt'
+                date: { $gte: budget.startDate, $lte: budget.endDate },
             });
             const spentAmount = expenses.reduce((acc, item) => acc + item.amount, 0);
             return {
@@ -34,7 +36,6 @@ router.get('/', protect, async (req, res) => {
     );
     res.json(budgetDetails);
 });
-
 // @desc    Update sebuah budget
 // @route   PUT /api/budgets/:id
 // @access  Private

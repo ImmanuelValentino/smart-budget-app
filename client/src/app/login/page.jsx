@@ -2,9 +2,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import api from '@/services/api'; // <<< PENTING: Import instansi axios kita
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +14,8 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post(
-                'http://localhost:5000/api/users/login',
-                { email, password }
-            );
+            // <<< PENTING: Gunakan 'api' yang sudah kita buat, bukan axios.post langsung
+            const { data } = await api.post('/users/login', { email, password });
             localStorage.setItem('userInfo', JSON.stringify(data));
             router.push('/dashboard');
         } catch (error) {

@@ -120,5 +120,3 @@ router.delete('/:id', protect, async (req, res) => {
 });
 
 module.exports = router;
-// PUT /api/transactions/:id (Logika update lebih kompleks, kita sederhanakan dulu)
-// ... (bisa ditambahkan nanti) ...

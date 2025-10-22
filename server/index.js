@@ -9,14 +9,8 @@ const startServer = async () => {
         const app = express();
         const port = process.env.PORT || 5000;
 
-        // --- 👇👇 PERBARUI KONFIGURASI CORS DI SINI 👇👇 ---
-        const corsOptions = {
-            // Ganti dengan URL Vercel Anda yang sebenarnya
-            origin: 'https://smart-budget-app-taupe.vercel.app/',
-            optionsSuccessStatus: 200
-        };
-        app.use(cors({ origin: '*' }));
-        // --- 👆👆 BATAS AKHIR PERUBAHAN 👆👆 ---
+        // Sederhanakan CORS agar lebih fleksibel
+        app.use(cors());
 
         app.use(express.json());
 
@@ -33,7 +27,6 @@ const startServer = async () => {
         app.listen(port, () => {
             console.log(`🚀 Server berjalan di port: ${port}`);
         });
-
     } catch (error) {
         console.error("Gagal menjalankan server:", error);
         process.exit(1);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// --- KODE YANG BENAR ADA DI SINI ---
+// Ini adalah KODE YANG 100% BENAR
 const baseURL = process.env.NODE_ENV === 'production'
     ? process.env.NEXT_PUBLIC_API_URL
     : 'http://localhost:5000/api';
@@ -23,7 +23,6 @@ api.interceptors.request.use(
     },
     (error) => {
         return Promise.reject(error);
-        आभार(aabhaar)
     }
 );
 
