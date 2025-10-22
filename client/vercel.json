@@ -1,0 +1,7 @@
+{
+    "build": {
+        "env": {
+            "NEXT_PUBLIC_API_URL": "https://smart-budget-app-production.up.railway.app/api"
+        }
+    }
+}

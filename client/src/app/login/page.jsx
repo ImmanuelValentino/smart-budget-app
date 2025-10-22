@@ -30,7 +30,8 @@ const LoginPage = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
             <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
                 <h1 className="text-3xl font-bold text-center text-green-400">SmartBudget</h1>
-                <h2 className="text-2xl font-semibold text-center">-- APLIKASI VERSI BARU --</h2>                <form onSubmit={handleSubmit} className="space-y-6">
+                <h2 className="text-2xl font-semibold text-center">Login to Your Account</h2>
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-300">Email</label>
                         <input
