@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import api from '@/services/api';
+import api from '@/services/api'; // Gunakan service API
 import dynamic from 'next/dynamic';
 
 const ClientCreatableSelect = dynamic(() => import('@/components/ClientCreatableSelect'), { ssr: false });
@@ -18,7 +18,7 @@ const IncomePage = () => {
     const [editingId, setEditingId] = useState(null);
     const [accounts, setAccounts] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
-    const [isClient, setIsClient] = useState(false);
+    const [isClient, setIsClient] = useState(false); // Untuk dynamic import
 
     useEffect(() => {
         setIsClient(true);
@@ -28,9 +28,9 @@ const IncomePage = () => {
     const fetchData = async () => {
         try {
             const [transRes, accRes, catRes] = await Promise.all([
-                api.get('/transactions'),
-                api.get('/accounts'),
-                api.get('/categories')
+                api.get('/transactions'), // Gunakan 'api'
+                api.get('/accounts'),      // Gunakan 'api'
+                api.get('/categories')     // Gunakan 'api'
             ]);
 
             setTransactions(transRes.data.filter(t => t.type === 'pemasukan'));
@@ -42,6 +42,11 @@ const IncomePage = () => {
             }
         } catch (error) {
             console.error("Gagal mengambil data", error);
+            // Tambahkan penanganan error, misal redirect jika token tidak valid
+            if (error.response && error.response.status === 401) {
+                // Handle unauthorized error (misalnya, redirect ke login)
+                // router.push('/login');
+            }
         }
     };
 
@@ -56,11 +61,13 @@ const IncomePage = () => {
         }
     };
 
+    // Fungsi format Rupiah
     const formatRupiah = (angka) => {
         if (!angka) return '';
         return new Intl.NumberFormat('id-ID').format(angka);
     };
 
+    // Handle change dengan format Rupiah
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === 'amount') {
@@ -71,6 +78,7 @@ const IncomePage = () => {
         }
     };
 
+    // Submit menggunakan 'api'
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.category) {
@@ -80,7 +88,7 @@ const IncomePage = () => {
 
         const payload = {
             accountId: form.accountId,
-            amount: Number(form.amount),
+            amount: Number(form.amount), // Kirim angka murni
             category: form.category.value,
             description: form.description,
             date: form.date,
@@ -95,40 +103,43 @@ const IncomePage = () => {
                 await api.post('/transactions', payload);
                 alert('Pemasukan berhasil ditambahkan!');
             }
-            fetchData();
+            fetchData(); // Panggil fetchData tanpa token
             resetForm();
         } catch (error) {
             alert('Gagal memproses data');
         }
     };
 
+    // Delete menggunakan 'api'
     const handleDelete = async (id) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
             try {
                 await api.delete(`/transactions/${id}`);
                 alert('Transaksi berhasil dihapus!');
-                fetchData();
+                fetchData(); // Panggil fetchData tanpa token
             } catch (error) {
                 alert('Gagal menghapus transaksi');
             }
         }
     };
 
+    // Fungsi edit tidak berubah secara signifikan
     const handleEditClick = (transaction) => {
         setEditingId(transaction._id);
         setForm({
             accountId: transaction.account,
-            amount: transaction.amount,
+            amount: transaction.amount, // Simpan angka murni
             category: { value: transaction.category, label: transaction.category },
             description: transaction.description,
             date: new Date(transaction.date).toISOString().split('T')[0],
         });
     };
 
+    // Reset form
     const resetForm = () => {
         setEditingId(null);
         setForm({
-            ...form,
+            ...form, // Pertahankan accountId yang dipilih
             amount: '',
             category: null,
             description: '',
@@ -136,24 +147,25 @@ const IncomePage = () => {
         });
     };
 
+    // Styling react-select
     const customSelectStyles = {
-        control: (provided) => ({ ...provided, backgroundColor: '#4A5568', borderColor: '#718096', color: 'white', boxShadow: 'none', '&:hover': { borderColor: '#A0AEC0' } }),
-        menu: (provided) => ({ ...provided, backgroundColor: '#4A5568' }),
-        option: (provided, state) => ({ ...provided, backgroundColor: state.isFocused ? '#2D3748' : '#4A5568', color: '#E2E8F0' }),
-        singleValue: (provided) => ({ ...provided, color: '#E2E8F0' }),
-        input: (provided) => ({ ...provided, color: '#E2E8F0' }),
+        control: (provided) => ({ ...provided, backgroundColor: '#374151', borderColor: '#4B5563', color: 'white', boxShadow: 'none', '&:hover': { borderColor: '#6B7280' } }), // bg-gray-700, border-gray-600
+        menu: (provided) => ({ ...provided, backgroundColor: '#374151' }), // bg-gray-700
+        option: (provided, state) => ({ ...provided, backgroundColor: state.isFocused ? '#1F2937' : '#374151', color: '#F9FAFB' }), // bg-gray-800 : bg-gray-700, text-gray-50
+        singleValue: (provided) => ({ ...provided, color: '#F9FAFB' }), // text-gray-50
+        input: (provided) => ({ ...provided, color: '#F9FAFB' }), // text-gray-50
     };
 
     return (
         <div>
             <h1 className="text-3xl font-bold mb-8">Pemasukan Anda</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="md:col-span-1 bg-gray-800 p-6 rounded-lg">
+                <div className="md:col-span-1 bg-gray-800 p-6 rounded-lg shadow-lg">
                     <h2 className="text-2xl font-semibold mb-4">{editingId ? 'Edit Pemasukan' : 'Tambah Pemasukan'}</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block mb-2 text-sm text-gray-300">Masukkan ke Akun</label>
-                            <select name="accountId" value={form.accountId} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600" required>
+                            <select name="accountId" value={form.accountId} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500" required>
                                 {accounts.map(acc => (
                                     <option key={acc._id} value={acc._id}>{acc.name}</option>
                                 ))}
@@ -161,7 +173,7 @@ const IncomePage = () => {
                         </div>
                         <div>
                             <label className="block mb-2 text-sm text-gray-300">Jumlah (Rp)</label>
-                            <input type="text" inputMode="numeric" name="amount" value={formatRupiah(form.amount)} onChange={handleChange} placeholder="1.000.000" className="w-full p-2 rounded bg-gray-700 border border-gray-600" required />
+                            <input type="text" inputMode="numeric" name="amount" value={formatRupiah(form.amount)} onChange={handleChange} placeholder="1.000.000" className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500" required />
                         </div>
                         <div>
                             <label className="block mb-2 text-sm text-gray-300">Kategori</label>
@@ -182,13 +194,13 @@ const IncomePage = () => {
                         </div>
                         <div>
                             <label className="block mb-2 text-sm text-gray-300">Deskripsi (Opsional)</label>
-                            <input type="text" name="description" value={form.description} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600" />
+                            <input type="text" name="description" value={form.description} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500" />
                         </div>
                         <div>
                             <label className="block mb-2 text-sm text-gray-300">Tanggal</label>
-                            <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600" required />
+                            <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500" required />
                         </div>
-                        <button type="submit" className="w-full py-2 font-bold text-gray-900 bg-green-400 rounded-md hover:bg-green-500 transition-colors">
+                        <button type="submit" className="w-full py-2 font-bold text-gray-900 bg-green-400 rounded-md hover:bg-green-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-green-400">
                             {editingId ? 'Update Pemasukan' : 'Simpan Pemasukan'}
                         </button>
                         {editingId && (
@@ -198,7 +210,7 @@ const IncomePage = () => {
                         )}
                     </form>
                 </div>
-                <div className="md:col-span-2 bg-gray-800 p-6 rounded-lg">
+                <div className="md:col-span-2 bg-gray-800 p-6 rounded-lg shadow-lg">
                     <h2 className="text-2xl font-semibold mb-4">Riwayat Pemasukan</h2>
                     <div className="space-y-3">
                         {transactions.map((trans) => (
@@ -214,6 +226,7 @@ const IncomePage = () => {
                                 </div>
                             </div>
                         ))}
+                        {transactions.length === 0 && <p className="text-gray-400">Belum ada pemasukan.</p>}
                     </div>
                 </div>
             </div>

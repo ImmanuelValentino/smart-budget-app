@@ -1,15 +1,12 @@
 import axios from 'axios';
 
-// Ini adalah KODE YANG 100% BENAR
 const baseURL = process.env.NODE_ENV === 'production'
     ? process.env.NEXT_PUBLIC_API_URL
-    : 'http://localhost:5000/api';
+    : 'https://smart-budget-app-production.up.railway.app/api';
 
 const api = axios.create({
     baseURL: baseURL,
 });
-
-console.log(`[API Service] Using baseURL: ${baseURL}`);
 
 api.interceptors.request.use(
     (config) => {

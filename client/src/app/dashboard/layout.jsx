@@ -1,9 +1,8 @@
-// src/app/dashboard/layout.jsx
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from '@/components/Header'; // @/ adalah shortcut ke folder src/
+import Header from '@/components/Header';
 
 export default function DashboardLayout({ children }) {
     const router = useRouter();
@@ -15,11 +14,10 @@ export default function DashboardLayout({ children }) {
         }
     }, [router]);
 
-    // Kita tambahkan styling di sini
     return (
-        <div className="bg-gray-900 min-h-screen text-white">
+        <div className="min-h-screen bg-gray-900 text-gray-50">
             <Header />
-            <main className="p-8">
+            <main className="container mx-auto p-4 md:p-8">
                 {children}
             </main>
         </div>

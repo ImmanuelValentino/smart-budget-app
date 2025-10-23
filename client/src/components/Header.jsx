@@ -1,58 +1,48 @@
-// src/components/Header.jsx
-'use client'; // Tetap gunakan ini untuk interaktivitas
+'use client';
 
-import React, { useState, useEffect } from 'react'; // 1. Import useState dan useEffect
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const Header = () => {
     const router = useRouter();
-
-    // 2. Buat state untuk userInfo, defaultnya null
+    const pathname = usePathname();
     const [userInfo, setUserInfo] = useState(null);
 
-    // 3. Gunakan useEffect untuk mengakses localStorage
     useEffect(() => {
-        // Kode di dalam useEffect HANYA berjalan di sisi browser
         const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
         if (storedUserInfo) {
             setUserInfo(storedUserInfo);
         }
-    }, []); // [] artinya useEffect hanya berjalan sekali saat komponen dimuat di browser
+    }, []);
 
     const logoutHandler = () => {
         localStorage.removeItem('userInfo');
         router.push('/login');
     };
 
+    const getLinkClass = (path) => {
+        return pathname === path ? "text-green-400 font-semibold" : "hover:text-green-300";
+    };
+
     return (
         <header className="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md">
             <div className="text-2xl font-bold">
-                <Link href="/dashboard" className="hover:text-green-400">
-                    SmartBudget
-                </Link>
+                <Link href="/dashboard" className="hover:text-green-400">SmartBudget</Link>
             </div>
-            <nav className="flex items-center space-x-6">
-                <nav className="flex items-center space-x-6">
-                    <Link href="/dashboard" className="hover:text-green-300">Dashboard</Link>
-                    <Link href="/dashboard/income" className="hover:text-green-300">Pemasukan</Link>
-                    <Link href="/dashboard/expenses" className="hover:text-green-300">Pengeluaran</Link>
-                    <Link href="/dashboard/accounts" className="hover:text-green-300">Akun</Link>
-                    <Link href="/dashboard/budgets" className="hover:text-green-300">Budget</Link> {/* <-- TAMBAHKAN INI */}
-                </nav>
+            <nav className="hidden md:flex items-center space-x-6">
+                <Link href="/dashboard" className={getLinkClass('/dashboard')}>Dashboard</Link>
+                <Link href="/dashboard/income" className={getLinkClass('/dashboard/income')}>Pemasukan</Link>
+                <Link href="/dashboard/expenses" className={getLinkClass('/dashboard/expenses')}>Pengeluaran</Link>
+                <Link href="/dashboard/accounts" className={getLinkClass('/dashboard/accounts')}>Akun</Link>
+                <Link href="/dashboard/budgets" className={getLinkClass('/dashboard/budgets')}>Budget</Link>
             </nav>
             <div className="flex items-center space-x-4">
-                {/* 4. Tampilkan nama HANYA jika userInfo sudah terisi */}
                 <span>Halo, {userInfo ? userInfo.nama : 'Guest'}</span>
-                <button
-                    onClick={logoutHandler}
-                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md text-sm font-medium"
-                >
-                    Logout
-                </button>
+                <button onClick={logoutHandler} className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md text-sm font-medium">Logout</button>
             </div>
         </header>
     );
 };
 
-export default Header;  
+export default Header;
