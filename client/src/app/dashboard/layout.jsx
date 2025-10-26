@@ -15,9 +15,10 @@ export default function DashboardLayout({ children }) {
     }, [router]);
 
     return (
-        <div className="min-h-screen bg-gray-900 text-gray-50">
+        <div className="bg-gray-900 min-h-screen text-white">
             <Header />
-            <main className="container mx-auto p-4 md:p-8">
+            {/* Ubah padding: p-4 di mobile, p-8 di layar medium ke atas */}
+            <main className="p-4 md:p-8">
                 {children}
             </main>
         </div>

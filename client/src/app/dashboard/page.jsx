@@ -6,15 +6,15 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic'; // Import dynamic
 
 // Gunakan dynamic import untuk chart dengan ssr: false
-const SummaryChart = dynamic(() => import('@/components/SummaryChart'), { ssr: false, loading: () => <ChartLoadingSkeleton /> }); // Tambahkan loading state
-const ExpensePieChart = dynamic(() => import('@/components/ExpensePieChart'), { ssr: false, loading: () => <ChartLoadingSkeleton /> }); // Tambahkan loading state
-
-// Komponen sederhana untuk placeholder loading chart
+// Tambahkan komponen loading skeleton sederhana
 const ChartLoadingSkeleton = () => (
     <div className="bg-gray-800 p-6 rounded-lg shadow-lg h-[400px] flex items-center justify-center">
         <p className="text-gray-400 animate-pulse">Memuat grafik...</p>
     </div>
 );
+const SummaryChart = dynamic(() => import('@/components/SummaryChart'), { ssr: false, loading: () => <ChartLoadingSkeleton /> }); // Pastikan path ini benar
+const ExpensePieChart = dynamic(() => import('@/components/ExpensePieChart'), { ssr: false, loading: () => <ChartLoadingSkeleton /> }); // Pastikan path ini benar
+
 
 const DashboardPage = () => {
     // State untuk filter tanggal
@@ -61,6 +61,14 @@ const DashboardPage = () => {
         } catch (error) {
             console.error("Gagal mengambil data", error);
             // Anda bisa tambahkan penanganan error di sini, misalnya logout jika token tidak valid (401)
+            if (error.response && error.response.status === 401) {
+                // Contoh: Redirect ke login jika token tidak valid
+                // localStorage.removeItem('userInfo');
+                // router.push('/login'); // Anda perlu import useRouter jika ingin redirect
+                alert("Sesi Anda habis, silakan login kembali.");
+            } else {
+                alert("Gagal memuat data dashboard.");
+            }
         }
     }, [startDate, endDate]); // Dependensi fetchData adalah startDate dan endDate
 
@@ -188,6 +196,7 @@ const DashboardPage = () => {
 
             {/* Line Chart Kumulatif - Render Kondisional */}
             <div>
+                {/* Pastikan komponen SummaryChart hanya menampilkan garis totalSaldo */}
                 {isClient ? <SummaryChart data={lineChartData} /> : <ChartLoadingSkeleton />}
             </div>
 
